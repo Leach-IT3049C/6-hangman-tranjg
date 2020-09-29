@@ -61,14 +61,19 @@ class Hangman {
     //    if it's not call onWrongGuess()
 
     if (letter ==  ``) {throw new Error(`Guess is empty`);}
-    if (typeof letter === `number` || typeof letter === `symbol`) throw new Error (`Guess must be a letter`);
-    if (letter.length > 1) throw new Error(`Guess must be one letter`);
-    if (typeof letter === `string`)
+    if (typeof letter === `number` || typeof letter === `symbol`) {throw new Error (`Guess must be a letter`);}
+    if (letter.length > 1) {throw new Error(`Guess must be one letter`);}
+    if (typeof letter === `string`) {
       letter.toLowerCase();
-    if(this.guesses.includes(letter))
+    } if(this.guesses.includes(letter)) {
       throw new Error(`You already guessed this letter.`);
+    }
     this.guesses.push(letter);
-
+    if (this.word.includes(letter)) {
+      this.checkWin();
+    } else {
+      this.onWrongGuess();
+    }
   }
 
   checkWin() {
