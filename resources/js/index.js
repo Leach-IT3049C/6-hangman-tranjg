@@ -50,7 +50,7 @@ function createParticle() {
   this.r = Math.floor(Math.random() * 30) + 5; //size - rad
   this.a = -90; //angle
   this.vy = Math.floor(Math.random() * 5) + 2; //velocity y
-  const color1 = `#e6e8fa`;
+  const color1 = `#7c86e6`;
   const color2 = `#f1c5cf`;
   const color3 = `#13e3cf`;
   const array = [ color1,color2,color3 ];
