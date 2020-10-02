@@ -1,6 +1,6 @@
 const nbOfParticles = 50;
 
-window.requestAnimFrame= (function() {
+window.requestAnimFrame= (function(){
   return window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
     window.mozRequestAnimationFrame ||
@@ -22,8 +22,8 @@ const paramX=0;
 const paramY=0;
 const rad = (Math.PI/180);
 
-const mouseX=0;
-const mouseY=0;
+var mouseX = 0;
+var mouseY=0;
 
 const particles = [];
 
@@ -37,8 +37,8 @@ document.addEventListener(`click`, function(e) {
 
 for(let i = 0; i < nbOfParticles; i++) {
   setTimeout(function() {
-    let mouseX = Math.random() * c.width; //first creation random x
-    let mouseY = Math.random() * c.height; //first creation random y
+    mouseX = Math.random() * c.width; //first creation random x
+    mouseY = Math.random() * c.height; //first creation random y
 
     particles.push(new createParticle);
   }, i * 15);
@@ -48,6 +48,7 @@ function createParticle() {
   this.x = mouseX;
   this.y = mouseY;
   this.r = Math.floor(Math.random() * 30) + 5; //size - rad
+  this.a = -90; //angle
   this.vy = Math.floor(Math.random() * 5) + 2; //velocity y
   const color1 = `#e6e8fa`;
   const color2 = `#f1c5cf`;
@@ -63,7 +64,7 @@ function drawParticles() {
   ctx.fillStyle = `#e3f2f1`;
   ctx.fillRect(0,0,w,h);
 
-  for(let t = 0; t < particles.length; t++) {
+  for( t = 0; t < particles.length; t++) {
     const p = particles[t];
     ctx.beginPath();
     ctx.fillStyle = p.color;
@@ -80,11 +81,12 @@ function drawParticles() {
     ctx.arc(cx1,cy1,chord,(270 + p.a) * rad, (270 + p.a + 225) * rad);
     ctx.lineTo(p.x, p.y);
     ctx.moveTo(x1,y1);
-    ctx.arc(cx2,cy2,chord,(90 + p.a) * rad, (270 + p.a + 225) * rad, true);
+    ctx.arc(cx2,cy2,chord,(90 + p.a) * rad, (90 + p.a + 135) * rad, true);
     ctx.lineTo(p.x,p.y);
     ctx.fill();
 
     p.y-=p.vy;
+
     p.life*=0.8;
 
   }
