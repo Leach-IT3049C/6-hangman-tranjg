@@ -1,68 +1,58 @@
-// START + DIFFICULTY SELECTION
-const startWrapper = document.getElementById(`startWrapper`);
-const difficultySelectForm = document.getElementById(`difficultySelect`);
-const difficultySelect = document.getElementById(`difficulty`);
+const nbOfParticles = 50;
 
-// GAME
-const gameWrapper = document.getElementById(`gameWrapper`);
-const guessesText = document.getElementById(`guesses`);
-const wordHolderText = document.getElementById(`wordHolder`);
+window.requestAnimFrame= (function() {
+  return window.requestAnimFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    function(callback) {
+      window.setTimeout(callback, 1000 / 60);
+    };
+});
 
-// GUESSING FORM
-const guessForm = document.getElementById(`guessForm`);
-const guessInput = document.getElementById(`guessInput`);
+const c = document.getElementById(`canvas`);
+const ctx = c.getContext(`2d`);
 
-// GAME RESET BUTTON
-const resetGame = document.getElementById(`resetGame`);
+const w = window.innerWidth;
+const h = window.innerHeight;
 
-// CANVAS
-let canvas = document.getElementById(`hangmanCanvas`);
+c.width = w;
+c.height = h;
 
-// Instantiate game
-let game;
+const paramX=0;
+const paramY=0;
+const rad = (Math.PI/180);
 
-function gameCallback() {
-  startWrapper.classList.add(`hidden`);
-  gameWrapper.classList.remove(`hidden`);
-  wordHolderText.innerHTML = game.getWordHolderText();
-  guessesText.innerHTML = game.getGuessesText();
+const mouseX=0;
+const mouseY=0;
+
+const particles = [];
+
+document.addEventListener(`click`. function(e) {
+  let mouseX = e.clientX || e.pageX;
+  let mouseY = e.clientY || e.pageY
+  console.log(paramX);
+
+  particles.push(new createParticle);
+}, false);
+
+for(i = 0; i < nbOfParticles; i++) {
+  setTimeout(function() {
+    let mouseX = Math.random() * c.width; //first creation random x
+    let mouseY = Math.random() * c.height; //first creation random y
+
+    particles.push(new createParticle);
+  }, i * 15);
 }
 
-// The following Try-Catch Block will catch the errors thrown
-try {
-  // Instantiate a game Object using the Hangman class.
-  // add a submit Event Listener for the to the difficultySelectionForm
-  //    get the difficulty input
-  //    call the game start() method, the callback function should do the following
-  //       1. hide the startWrapper
-  //       2. show the gameWrapper
-  //       3. call the game getWordHolderText and set it to the wordHolderText
-  //       4. call the game getGuessessText and set it to the guessesText
-  game = new Hangman(canvas);
-  difficultySelectForm.addEventListener(`submit`, function (event) {
-    game.start(difficultySelect, gameCallback);
-  });
-
-  // add a submit Event Listener to the guessForm
-  //    get the guess input
-  //    call the game guess() method
-  //    set the wordHolderText to the game.getHolderText
-  //    set the guessesText to the game.getGuessesText
-  //    clear the guess input field
-  // Given the Guess Function calls either the checkWin or the onWrongGuess methods
-  // the value of the isOver and didWin would change after calling the guess() function.
-  // Check if the game isOver:
-  //      1. disable the guessInput
-  //      2. disable the guessButton
-  //      3. show the resetGame button
-  // if the game is won or lost, show an alert.
-  guessForm.addEventListener(`submit`, function (e) {});
-
-  // add a click Event Listener to the resetGame button
-  //    show the startWrapper
-  //    hide the gameWrapper
-  resetGame.addEventListener(`click`, function (e) {});
-} catch (error) {
-  console.error(error);
-  alert(error);
+function createParticle() {
+  this.x = mouseX;
+  this.y = mouseY;
+  this.r = Math.floor(Math.random() * 30) + 5; //size - rad
+  this.vy = Math.floor(Math.random() * 5) + 2; //velocity y
+  const color1 = `#e6e8fa`;
+  const color2 = `#f1c5cf`;
+  const color3 = `#13e3cf`;
+  const array = [color1,color2,color3];
+  this.color = array[Math.floor(Math.random() * 3)]; //one of the three colors
+  this.life = Math.random() * 30;
 }
