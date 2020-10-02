@@ -1,56 +1,95 @@
-// START + DIFFICULTY SELECTION
-const startWrapper = document.getElementById(`startWrapper`);
-const difficultySelectForm = document.getElementById(`difficultySelect`);
-const difficultySelect = document.getElementById(`difficulty`);
+const nbOfParticles = 50;
 
-// GAME
-const gameWrapper = document.getElementById(`gameWrapper`);
-const guessesText = document.getElementById(`guesses`);
-const wordHolderText = document.getElementById(`wordHolder`);
+window.requestAnimFrame= (function(){
+  return window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    function(callback) {
+      window.setTimeout(callback, 1000 / 60);
+    };
+})();
 
-// GUESSING FORM
-const guessForm = document.getElementById(`guessForm`);
-const guessInput = document.getElementById(`guessInput`);
+const c = document.getElementById(`canvas`);
+const ctx = c.getContext(`2d`);
 
-// GAME RESET BUTTON
-const resetGame = document.getElementById(`resetGame`);
+const w = window.innerWidth;
+const h = window.innerHeight;
 
-// CANVAS
-let canvas = document.getElementById(`hangmanCanvas`);
+c.width = w;
+c.height = h;
 
-// The following Try-Catch Block will catch the errors thrown
-try {
-  // Instantiate a game Object using the Hangman class.
+const paramX=0;
+const paramY=0;
+const rad = (Math.PI/180);
 
-  // add a submit Event Listener for the to the difficultySelectionForm
-  //    get the difficulty input
-  //    call the game start() method, the callback function should do the following
-  //       1. hide the startWrapper
-  //       2. show the gameWrapper
-  //       3. call the game getWordHolderText and set it to the wordHolderText
-  //       4. call the game getGuessessText and set it to the guessesText
-  difficultySelectForm.addEventListener(`submit`, function (event) {});
+var mouseX = 0;
+var mouseY=0;
 
-  // add a submit Event Listener to the guessForm
-  //    get the guess input
-  //    call the game guess() method
-  //    set the wordHolderText to the game.getHolderText
-  //    set the guessesText to the game.getGuessesText
-  //    clear the guess input field
-  // Given the Guess Function calls either the checkWin or the onWrongGuess methods
-  // the value of the isOver and didWin would change after calling the guess() function.
-  // Check if the game isOver:
-  //      1. disable the guessInput
-  //      2. disable the guessButton
-  //      3. show the resetGame button
-  // if the game is won or lost, show an alert.
-  guessForm.addEventListener(`submit`, function (e) {});
+const particles = [];
 
-  // add a click Event Listener to the resetGame button
-  //    show the startWrapper
-  //    hide the gameWrapper
-  resetGame.addEventListener(`click`, function (e) {});
-} catch (error) {
-  console.error(error);
-  alert(error);
+document.addEventListener(`click`, function(e) {
+  mouseX = e.clientX || e.pageX;
+  mouseY = e.clientY || e.pageY;
+  console.log(paramX);
+
+  particles.push(new createParticle);
+}, false);
+
+for(let i = 0; i < nbOfParticles; i++) {
+  setTimeout(function() {
+    mouseX = Math.random() * c.width; //first creation random x
+    mouseY = Math.random() * c.height; //first creation random y
+
+    particles.push(new createParticle);
+  }, i * 15);
 }
+
+function createParticle() {
+  this.x = mouseX;
+  this.y = mouseY;
+  this.r = Math.floor(Math.random() * 30) + 5; //size - rad
+  this.a = -90; //angle
+  this.vy = Math.floor(Math.random() * 5) + 2; //velocity y
+  const color1 = `#7c86e6`;
+  const color2 = `#f1c5cf`;
+  const color3 = `#13e3cf`;
+  const array = [ color1,color2,color3 ];
+  this.color = array[Math.floor(Math.random() * 3)]; //one of the three colors
+  this.life = Math.random() * 30;
+}
+
+function drawParticles() {
+  requestAnimFrame(drawParticles);
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = `#e3f2f1`;
+  ctx.fillRect(0,0,w,h);
+
+  for( t = 0; t < particles.length; t++) {
+    const p = particles[t];
+    ctx.beginPath();
+    ctx.fillStyle = p.color;
+    const x1 = p.x + p.r * Math.cos(p.a * rad);
+    const y1 = p.y + p.r * Math.sin(p.a * rad);
+    const cx1 = p.x + p.r * Math.cos((p.a + 22.5) * rad);
+    const cy1 = p.y + p.r * Math.sin((p.a + 22.5) * rad);
+    const cx2 = p.x + p.r * Math.cos((p.a - 22.5) * rad);
+    const cy2 = p.y + p.r * Math.sin((p.a - 22.5) * rad);
+    const chord = 2 * p.r * Math.sin(22.5 * rad / 2);
+
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.arc(cx1,cy1,chord,(270 + p.a) * rad, (270 + p.a + 225) * rad);
+    ctx.lineTo(p.x, p.y);
+    ctx.moveTo(x1,y1);
+    ctx.arc(cx2,cy2,chord,(90 + p.a) * rad, (90 + p.a + 135) * rad, true);
+    ctx.lineTo(p.x,p.y);
+    ctx.fill();
+
+    p.y-=p.vy;
+
+    p.life*=0.8;
+
+  }
+}
+
+drawParticles();
